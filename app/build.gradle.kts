@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlin.serialization) version libs.versions.kotlin
 }
 
 android {
@@ -31,17 +32,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -51,7 +53,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.activity.compose)
@@ -67,4 +68,19 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+    implementation(libs.json.serialization)
+
+    // DI - Koin
+    implementation (libs.koin.android)
+    implementation (libs.koin.androidx.navigation)
+    implementation (libs.koin.androidx.compose)
+    testImplementation (libs.koin.test.junit4)
+
+    // Networking - Ktor
+    api(libs.ktor.android.client)
+    api(libs.ktor.okhttp.client)
+    api(libs.ktor.core.client)
+    api(libs.ktor.logging)
+    api(libs.ktor.content.negotiation)
+    api(libs.ktor.kotlinx.serialization)
 }
