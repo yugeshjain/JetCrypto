@@ -1,6 +1,7 @@
 package com.yugesh.jetcrypto.ui.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,7 +49,7 @@ fun HomeScreen() {
         derivedStateOf {
             if (searchTextField.isNotEmpty()) {
                 coinsList.filter {
-                    it.name.contains(searchTextField, ignoreCase = true)
+                    it.name?.contains(searchTextField, ignoreCase = true) ?: false
                 }
             } else {
                 coinsList
@@ -95,7 +96,10 @@ fun HomeScreen() {
                                 items = searchedCoinList,
                                 key = { it.id }
                             ) {
-                                CardDe(it.name)
+                                CardDe(
+                                    id = it.name.orEmpty(),
+                                    onClick = { homeViewModel.getCoinDetail(coinId = it.id) }
+                                )
                             }
                         }
                     )
@@ -113,7 +117,8 @@ fun HomeScreen() {
 
 @Composable
 fun CardDe(
-    id: String
+    id: String,
+    onClick: () -> Unit
 ) {
     var currentId by rememberSaveable {
         mutableStateOf<String?>(null)
@@ -125,7 +130,14 @@ fun CardDe(
             println(currentId)
         }
     }
-    Text(text = id, fontSize = 40.sp, modifier = Modifier.fillMaxWidth().height(200.dp))
+    Text(
+        text = id,
+        fontSize = 40.sp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clickable(onClick = onClick)
+    )
 }
 
 @Preview

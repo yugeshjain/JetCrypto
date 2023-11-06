@@ -2,6 +2,7 @@ package com.yugesh.jetcrypto.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yugesh.jetcrypto.domain.model.CoinDetailsModel
 import com.yugesh.jetcrypto.domain.model.CoinModel
 import com.yugesh.jetcrypto.domain.repo.CoinsRepo
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,14 @@ class HomeViewModel(
                 )
             }
         }
+    }
+
+    fun getCoinDetail(coinId: String): CoinDetailsModel {
+        var result = CoinDetailsModel()
+        viewModelScope.launch(Dispatchers.IO) {
+            result = coinsRepo.getCoinDetails(coinId = coinId)
+        }
+        return result
     }
 
     private fun loadingStarted(){
