@@ -4,18 +4,22 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,6 +39,23 @@ fun HomeScreen() {
     val homeViewModel: HomeViewModel = getViewModel<HomeViewModel>()
     val screenUiState by homeViewModel.homeScreenUiState.collectAsState()
 
+    var searchTextField by remember { mutableStateOf("") }
+    val coinsList = screenUiState.coinsList
+
+    val scrollState = rememberLazyListState()
+
+    val searchedCoinList by remember(key1 = searchTextField, key2 = coinsList) {
+        derivedStateOf {
+            if (searchTextField.isNotEmpty()) {
+                coinsList.filter {
+                    it.name.contains(searchTextField, ignoreCase = true)
+                }
+            } else {
+                coinsList
+            }
+        }
+    }
+
     val pullState = rememberPullRefreshState(
         refreshing = screenUiState.isLoading,
         onRefresh = {
@@ -52,18 +73,29 @@ fun HomeScreen() {
         Box(
             modifier = Modifier.fillMaxSize(),
             content = {
-                if (screenUiState.isLoading){
+                if (screenUiState.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
                     LazyColumn(
+                        state = scrollState,
                         modifier = Modifier
                             .fillMaxWidth()
                             .pullRefresh(state = pullState),
                         content = {
-                            items(screenUiState.coinsList) {
-                                CardDe(it.id)
+                            item {
+                                OutlinedTextField(
+                                    value = searchTextField,
+                                    onValueChange = { searchTextField = it },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            items(
+                                items = searchedCoinList,
+                                key = { it.id }
+                            ) {
+                                CardDe(it.name)
                             }
                         }
                     )
@@ -93,7 +125,7 @@ fun CardDe(
             println(currentId)
         }
     }
-    Text(text = id, fontSize = 40.sp, modifier = Modifier.size(200.dp))
+    Text(text = id, fontSize = 40.sp, modifier = Modifier.fillMaxWidth().height(200.dp))
 }
 
 @Preview
