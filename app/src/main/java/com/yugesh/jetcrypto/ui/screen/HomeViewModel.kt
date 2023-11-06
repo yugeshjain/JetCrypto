@@ -19,16 +19,27 @@ class HomeViewModel(
     val homeScreenUiState: StateFlow<HomeScreenUiState> = _homeScreenUiState.asStateFlow()
 
     fun getCoinList() {
+        loadingStarted()
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUiState.update { uiState ->
                 uiState.copy(
                     coinsList = coinsRepo.getCoinList(),
+                    isLoading = false
                 )
             }
+        }
+    }
+
+    private fun loadingStarted(){
+        _homeScreenUiState.update { uiState ->
+            uiState.copy(
+                isLoading = true
+            )
         }
     }
 }
 
 data class HomeScreenUiState(
-    val coinsList: List<CoinModel> = emptyList()
+    val coinsList: List<CoinModel> = emptyList(),
+    val isLoading: Boolean = false
 )
