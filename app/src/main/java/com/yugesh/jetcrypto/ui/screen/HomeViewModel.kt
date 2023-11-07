@@ -1,5 +1,6 @@
 package com.yugesh.jetcrypto.ui.screen
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugesh.jetcrypto.domain.model.CoinModel
@@ -21,6 +22,10 @@ class HomeViewModel(
 
     private val _homeScreenUiState = MutableStateFlow(HomeScreenUiState())
     val homeScreenUiState: StateFlow<HomeScreenUiState> = _homeScreenUiState.asStateFlow()
+
+    init {
+        getCoinList()
+    }
 
     fun getCoinList() {
         loadingStarted()
@@ -67,6 +72,7 @@ data class HomeScreenUiState(
     val isLoading: Boolean = false
 )
 
+@Immutable
 data class CoinDetails(
     val id: String = "",
     val name: String = "",

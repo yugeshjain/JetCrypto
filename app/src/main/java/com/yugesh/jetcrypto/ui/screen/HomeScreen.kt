@@ -103,9 +103,6 @@ fun HomeScreen() {
         }
     )
 
-    LaunchedEffect(Unit) {
-        homeViewModel.getCoinList()
-    }
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val isCollapsed by remember { derivedStateOf { scrollBehavior.state.collapsedFraction > 0.5 } }
