@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val serviceModule = module {
     single<CoinsService> {
-        CoinsServiceImpl(get())
+        CoinsServiceImpl(client = get())
     }
 }

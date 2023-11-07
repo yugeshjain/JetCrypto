@@ -3,7 +3,8 @@ package com.yugesh.jetcrypto.ui.screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yugesh.jetcrypto.domain.model.CoinModel
-import com.yugesh.jetcrypto.domain.repo.CoinsRepo
+import com.yugesh.jetcrypto.domain.usecase.GetCoinPriceDetailsUseCase
+import com.yugesh.jetcrypto.domain.usecase.GetCoinsListUseCase
 import com.yugesh.jetcrypto.ui.util.roundOffDecimal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -12,10 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class HomeViewModel(
-    private val coinsRepo: CoinsRepo
+    private val getCoinsListUseCase: GetCoinsListUseCase,
+    private val getCoinPriceDetailsUseCase: GetCoinPriceDetailsUseCase
 ) : ViewModel() {
 
     private val _homeScreenUiState = MutableStateFlow(HomeScreenUiState())
@@ -26,7 +27,7 @@ class HomeViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _homeScreenUiState.update { uiState ->
                 uiState.copy(
-                    coinsList = coinsRepo.getCoinList(),
+                    coinsList = getCoinsListUseCase(),
                     isLoading = false
                 )
             }
@@ -36,7 +37,7 @@ class HomeViewModel(
     suspend fun getCoinDetail(coinId: String): CoinDetails? {
         return try {
             val asyncCall = viewModelScope.async(Dispatchers.IO) {
-                coinsRepo.getCoinPriceDetails(coinId = coinId)
+                getCoinPriceDetailsUseCase(coinId = coinId)
             }
             val details = asyncCall.await()
             CoinDetails(

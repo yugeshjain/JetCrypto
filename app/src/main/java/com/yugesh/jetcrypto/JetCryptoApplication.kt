@@ -4,6 +4,7 @@ import android.app.Application
 import com.yugesh.jetcrypto.di.networkModule
 import com.yugesh.jetcrypto.di.repoModule
 import com.yugesh.jetcrypto.di.serviceModule
+import com.yugesh.jetcrypto.di.useCaseModule
 import com.yugesh.jetcrypto.di.viewmodelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,6 +20,7 @@ class JetCryptoApplication : Application() {
                 networkModule,
                 serviceModule,
                 repoModule,
+                useCaseModule,
                 viewmodelModule
             )
         }

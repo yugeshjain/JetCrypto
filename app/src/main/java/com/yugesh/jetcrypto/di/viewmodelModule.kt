@@ -6,6 +6,9 @@ import org.koin.dsl.module
 
 val viewmodelModule = module {
     viewModel {
-        HomeViewModel(get())
+        HomeViewModel(
+            getCoinsListUseCase = get(),
+            getCoinPriceDetailsUseCase = get()
+        )
     }
 }
