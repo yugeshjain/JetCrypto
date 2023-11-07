@@ -7,7 +7,6 @@ import com.yugesh.jetcrypto.domain.model.CoinModel
 import com.yugesh.jetcrypto.domain.usecase.GetCoinPriceDetailsUseCase
 import com.yugesh.jetcrypto.domain.usecase.GetCoinsListUseCase
 import com.yugesh.jetcrypto.ui.util.roundOffDecimal
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +28,7 @@ class HomeViewModel(
 
     fun getCoinList() {
         loadingStarted()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _homeScreenUiState.update { uiState ->
                 uiState.copy(
                     coinsList = getCoinsListUseCase(),
@@ -41,7 +40,7 @@ class HomeViewModel(
 
     suspend fun getCoinDetail(coinId: String): CoinDetails? {
         return try {
-            val asyncCall = viewModelScope.async(Dispatchers.IO) {
+            val asyncCall = viewModelScope.async {
                 getCoinPriceDetailsUseCase(coinId = coinId)
             }
             val details = asyncCall.await()
