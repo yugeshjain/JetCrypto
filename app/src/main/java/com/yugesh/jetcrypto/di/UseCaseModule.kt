@@ -7,15 +7,15 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
 
-    single<GetCoinsListUseCase> {
+    factory<GetCoinsListUseCase> {
         GetCoinsListUseCase(coinsRepo = get())
     }
 
-    single<GetCoinDetailsUseCase> {
+    factory<GetCoinDetailsUseCase> {
         GetCoinDetailsUseCase(coinsRepo = get())
     }
 
-    single<GetCoinPriceDetailsUseCase> {
+    factory<GetCoinPriceDetailsUseCase> {
         GetCoinPriceDetailsUseCase(coinsRepo = get())
     }
 }
