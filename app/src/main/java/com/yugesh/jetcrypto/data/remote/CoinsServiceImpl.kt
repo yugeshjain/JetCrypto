@@ -1,8 +1,10 @@
 package com.yugesh.jetcrypto.data.remote
 
 import com.yugesh.jetcrypto.data.remote.ApiEndPoints.LIST_COINS
+import com.yugesh.jetcrypto.data.remote.ApiEndPoints.TICKERS
 import com.yugesh.jetcrypto.domain.model.CoinDetailsModel
 import com.yugesh.jetcrypto.domain.model.CoinModel
+import com.yugesh.jetcrypto.domain.model.CoinPriceDetailsModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -26,6 +28,15 @@ class CoinsServiceImpl(
         } catch (e: Exception) {
             println(e.message)
             CoinDetailsModel()
+        }
+    }
+
+    override suspend fun getCoinPriceDetails(coinId: String): CoinPriceDetailsModel {
+        return try {
+            client.get("$TICKERS/$coinId").body()
+        } catch (e: Exception) {
+            println(e.message)
+            CoinPriceDetailsModel()
         }
     }
 }
